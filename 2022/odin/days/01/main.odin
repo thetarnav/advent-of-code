@@ -31,19 +31,47 @@ funny :: proc() {
 
 
 // Alternative to `os.read_entire_file` I guess
-manual_read_file :: proc(path: string) -> (buf: []byte) {
+manual_read_file :: proc(path: string) -> []byte {
     handle, open_err := os.open(path)
     if open_err > 0 {fmt.panicf("Open Error: %#v", open_err)}
     defer os.close(handle)
 
-    buf = make([]byte, 1024)
-    // defer delete(buf) // breaks stuff (for some malloc reason)
+    buf := make([]byte, 1024) // make sure the slice is allocated on the heap
     size, read_err := os.read(handle, buf)
 
+    // stack allocation - gets deleted when the function returns
+    // buf: [1024]byte
+    // size, read_err := os.read(handle, buf[:])
 
     if read_err > 0 {fmt.panicf("Read Error: %#v", open_err)}
 
     return buf[:size]
+}
+
+
+// Trying out iterators
+Lines_Iterator :: struct {
+    index, start, size: int,
+    buf:                []byte,
+}
+make_lines_iterator :: proc(buf: []byte) -> Lines_Iterator {
+    return Lines_Iterator{index = 0, start = 0, buf = buf, size = len(buf)}
+}
+each_lines :: proc(using it: ^Lines_Iterator) -> (line: string, cond: bool) {
+    for index < size {
+        defer index += 1 // so that it's always called, even if we return early
+        if cond = buf[index] == 10; cond {     // 10 is a newline?
+            line = string(buf[start:index])
+            start = index + 1
+            return
+        }
+    }
+
+    if cond = start < size; cond {
+        line = string(buf[start:size])
+    }
+
+    return
 }
 
 file_to_lines :: proc(buf: []byte) -> (lines: [dynamic]string) {
@@ -52,20 +80,20 @@ file_to_lines :: proc(buf: []byte) -> (lines: [dynamic]string) {
 
     for i in 0 ..< size {
         if buf[i] == 10 {     // 10 is a newline?
-            append_elem(&lines, string(buf[start:i]))
+            append(&lines, string(buf[start:i]))
             start = i + 1
         }
     }
 
     if start < size {
-        append_elem(&lines, string(buf[start:size]))
+        append(&lines, string(buf[start:size]))
     }
 
     return
 }
 
 main :: proc() {
-    funny()
+    // funny()
 
 
     buf := manual_read_file("../../../data/01/example.txt")
@@ -73,7 +101,12 @@ main :: proc() {
     lines := file_to_lines(buf)
     defer delete(lines)
 
-    fmt.println("Lines out:", lines)
+    fmt.println("Lines out:", lines, len(lines))
+
+    it := make_lines_iterator(buf)
+    for line in each_lines(&it) {
+        fmt.println("You entered:", line)
+    }
 
     // for line in lines {
     //     fmt.println("You entered:", line)
