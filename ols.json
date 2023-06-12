@@ -5,7 +5,5 @@
     "enable_hover": true,
     "enable_snippets": true,
     "enable_inlay_hints": true,
-    "verbose": true,
-    "enable_rename": true,
-    "enable_references": true
+    "verbose": true
 }

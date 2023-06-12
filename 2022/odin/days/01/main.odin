@@ -4,7 +4,7 @@ import "core:os"
 import "core:fmt"
 
 funny :: proc() {
-    program := "+ + * 😃 - /"
+    program := "+ + * 😃 - / 9"
     accumulator := 0
 
 
@@ -20,6 +20,8 @@ funny :: proc() {
             accumulator /= 2
         case '😃':
             accumulator *= accumulator
+        case '0' ..= '9':
+            accumulator += -int('0' - token) // ??
         case: // Ignore everything else
         }
     }
@@ -27,63 +29,55 @@ funny :: proc() {
     fmt.printf("The program \"%s\" calculates the value %d\n", program, accumulator)
 }
 
-read_file_lines :: proc(path: string) -> (lines: [dynamic]string, err: os.Errno) {
-    // input := [dynamic]string
 
-    f, open_err := os.open(path)
-    err = open_err
-    defer os.close(f)
+// Alternative to `os.read_entire_file` I guess
+manual_read_file :: proc(path: string) -> (buf: []byte) {
+    handle, open_err := os.open(path)
+    if open_err > 0 {fmt.panicf("Open Error: %#v", open_err)}
+    defer os.close(handle)
 
-    if err != os.ERROR_NONE {
-        return
+    buf = make([]byte, 1024)
+    // defer delete(buf) // breaks stuff (for some malloc reason)
+    size, read_err := os.read(handle, buf)
+
+
+    if read_err > 0 {fmt.panicf("Read Error: %#v", open_err)}
+
+    return buf[:size]
+}
+
+file_to_lines :: proc(buf: []byte) -> (lines: [dynamic]string) {
+    size := len(buf)
+    start := 0
+
+    for i in 0 ..< size {
+        if buf[i] == 10 {     // 10 is a newline?
+            append_elem(&lines, string(buf[start:i]))
+            start = i + 1
+        }
     }
 
-    fmt.printf("File: %s\n", f)
-    fmt.printf("Error: %s\n", err)
-
-    {
-        buf: [1024]byte // an array of 1024 bytes, because we know the length at compile time
-        buf_slice := buf[:] // a slice, becasue we don't know the length at compile time?
-
-        fmt.println("Buf:", buf, ' ')
-        fmt.println("Buf slice:", buf_slice, ' ')
-
-        i, read_err := os.read(f, buf_slice)
-
-        fmt.printf("Read %d bytes\n", i)
-        fmt.printf("Error: %s\n", read_err)
-        fmt.printf("Data: %s\n", buf)
+    if start < size {
+        append_elem(&lines, string(buf[start:size]))
     }
-
-
-    // for {
-    //     fmt.printf("Enter something: ")
-    //     input = os.readln()
-
-    //     if input == "quit" {
-    //         break
-    //     }
-
-    //     fmt.printf("You entered \"%s\"\n", input)
-    // }
 
     return
 }
 
 main :: proc() {
-    // funny()
+    funny()
 
 
-    lines, err := read_file_lines("../../../data/01/example.txt")
+    buf := manual_read_file("../../../data/01/example.txt")
+    defer delete(buf)
+    lines := file_to_lines(buf)
+    defer delete(lines)
 
-    if err != os.ERROR_NONE {
-        fmt.printf("Error: %d\n", err)
-        return
-    }
+    fmt.println("Lines out:", lines)
 
-    for line in lines {
-        fmt.printf("You entered \"%s\"\n", line)
-    }
+    // for line in lines {
+    //     fmt.println("You entered:", line)
+    // }
 
 
 }
