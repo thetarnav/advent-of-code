@@ -3,6 +3,7 @@ package main
 import "core:os"
 import "core:fmt"
 import "core:strings"
+import "core:strconv"
 import "core:path/filepath"
 
 
@@ -60,18 +61,18 @@ Lines_Iterator :: struct {
 make_lines_iterator :: proc(buf: []byte) -> Lines_Iterator {
     return Lines_Iterator{index = 0, start = 0, buf = buf, size = len(buf)}
 }
-each_lines :: proc(using it: ^Lines_Iterator) -> (line: []byte, cond: bool) {
+each_lines :: proc(using it: ^Lines_Iterator) -> (line: string, cond: bool) {
     for index < size {
         defer index += 1 // so that it's always called, even if we return early
         if cond = buf[index] == 10; cond {     // 10 is a newline?
-            line = buf[start:index]
+            line = string(buf[start:index])
             start = index + 1
             return
         }
     }
 
     if cond = start < size; cond {
-        line = buf[start:size]
+        line = string(buf[start:size])
     }
 
     return
@@ -101,17 +102,23 @@ get_input_path :: proc(day: int, file: string = "input") -> string {
     if day < 10 {strings.write_int(&builder, 0)}
     strings.write_int(&builder, day)
 
+    cwd := filepath.dir(#file)
+    defer delete(cwd)
     day_string := strings.to_string(builder)
     filename := strings.concatenate([]string{file, ".txt"})
-    return filepath.join([]string{"..", "..", "..", "data", day_string, filename})
+    return filepath.join([]string{cwd, "..", "..", "..", "data", day_string, filename})
+}
+
+read_input_file :: proc(day: int, file: string = "input") -> []byte {
+    path := get_input_path(day, file)
+    defer delete(path)
+    return manual_read_file(path)
 }
 
 main :: proc() {
     // funny()
 
-
-    input_path := get_input_path(1, "example")
-    buf := manual_read_file(input_path)
+    buf := read_input_file(1, "example")
     defer delete(buf)
     // lines := file_to_lines(buf)
     // defer delete(lines)
@@ -122,6 +129,6 @@ main :: proc() {
     curr := 0
     it := make_lines_iterator(buf)
     for line in each_lines(&it) {
-        fmt.println("You entered:", line, string(line))
+        fmt.println("You entered:", line, strconv.atoi(line))
     }
 }
