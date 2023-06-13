@@ -26,4 +26,4 @@ jobs:
           ./build_odin.sh release
 
       - name: Test
-        run: odin test ./2022/odin/days/01
+        run: ./2022/odin/test.sh
