@@ -2,6 +2,7 @@ package main
 
 import "core:os"
 import "core:fmt"
+import "core:slice"
 import "core:strings"
 import "core:strconv"
 import "core:path/filepath"
@@ -40,7 +41,7 @@ manual_read_file :: proc(path: string) -> []byte {
     if open_err > 0 {fmt.panicf("Open Error: %#v", open_err)}
     defer os.close(handle)
 
-    buf := make([]byte, 1024) // make sure the slice is allocated on the heap
+    buf := make_slice([]byte, 1024) // make sure the slice is allocated on the heap
     size, read_err := os.read(handle, buf)
 
     // stack allocation - gets deleted when the function returns
@@ -109,26 +110,38 @@ get_input_path :: proc(day: int, file: string = "input") -> string {
     return filepath.join([]string{cwd, "..", "..", "..", "data", day_string, filename})
 }
 
-read_input_file :: proc(day: int, file: string = "input") -> []byte {
+read_input_file :: proc(day: int, file: string = "input") -> string {
     path := get_input_path(day, file)
     defer delete(path)
-    return manual_read_file(path)
+    return string(manual_read_file(path))
+}
+
+sum_slice :: proc(numbers: []int) -> int {
+    result := 0
+    for number in numbers {
+        result += number
+    }
+    return result
 }
 
 main :: proc() {
     // funny()
 
-    buf := read_input_file(1, "example")
-    defer delete(buf)
+    input := read_input_file(1, "example")
+    defer delete(input)
     // lines := file_to_lines(buf)
     // defer delete(lines)
 
     // fmt.println("Lines out:", lines, len(lines))
 
-    max := 0
-    curr := 0
-    it := make_lines_iterator(buf)
-    for line in each_lines(&it) {
-        fmt.println("You entered:", line, strconv.atoi(line))
-    }
+
+    groups := strings.split(input, "\n\n")
+
+    totals := slice.mapper(groups, proc(group: string) -> int {
+        return sum_slice(slice.mapper(strings.split(group, "\n"), strconv.atoi))
+    })
+
+    max := slice.max(totals)
+
+    fmt.println("Max:", max)
 }
