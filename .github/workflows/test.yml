@@ -1,0 +1,29 @@
+name: Build and Test Solutions
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  odin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Download LLVM
+        run: sudo apt-get install llvm-11 clang-11
+
+      - name: Download Odin
+        run: git clone https://github.com/odin-lang/Odin
+
+      - name: Build Odin
+        run: |
+          cd Odin
+          ./build_odin.sh
+
+      - name: Test
+        run: odin test ./2022/odin/days/01
