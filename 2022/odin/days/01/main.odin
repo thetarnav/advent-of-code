@@ -2,6 +2,9 @@ package main
 
 import "core:os"
 import "core:fmt"
+import "core:strings"
+import "core:path/filepath"
+
 
 funny :: proc() {
     program := "+ + * 😃 - / 9"
@@ -57,18 +60,18 @@ Lines_Iterator :: struct {
 make_lines_iterator :: proc(buf: []byte) -> Lines_Iterator {
     return Lines_Iterator{index = 0, start = 0, buf = buf, size = len(buf)}
 }
-each_lines :: proc(using it: ^Lines_Iterator) -> (line: string, cond: bool) {
+each_lines :: proc(using it: ^Lines_Iterator) -> (line: []byte, cond: bool) {
     for index < size {
         defer index += 1 // so that it's always called, even if we return early
         if cond = buf[index] == 10; cond {     // 10 is a newline?
-            line = string(buf[start:index])
+            line = buf[start:index]
             start = index + 1
             return
         }
     }
 
     if cond = start < size; cond {
-        line = string(buf[start:size])
+        line = buf[start:size]
     }
 
     return
@@ -92,25 +95,33 @@ file_to_lines :: proc(buf: []byte) -> (lines: [dynamic]string) {
     return
 }
 
+get_input_path :: proc(day: int, file: string = "input") -> string {
+    builder := strings.builder_from_bytes([]byte{0, 0})
+
+    if day < 10 {strings.write_int(&builder, 0)}
+    strings.write_int(&builder, day)
+
+    day_string := strings.to_string(builder)
+    filename := strings.concatenate([]string{file, ".txt"})
+    return filepath.join([]string{"..", "..", "..", "data", day_string, filename})
+}
+
 main :: proc() {
     // funny()
 
 
-    buf := manual_read_file("../../../data/01/example.txt")
+    input_path := get_input_path(1, "example")
+    buf := manual_read_file(input_path)
     defer delete(buf)
-    lines := file_to_lines(buf)
-    defer delete(lines)
+    // lines := file_to_lines(buf)
+    // defer delete(lines)
 
-    fmt.println("Lines out:", lines, len(lines))
+    // fmt.println("Lines out:", lines, len(lines))
 
+    max := 0
+    curr := 0
     it := make_lines_iterator(buf)
     for line in each_lines(&it) {
-        fmt.println("You entered:", line)
+        fmt.println("You entered:", line, string(line))
     }
-
-    // for line in lines {
-    //     fmt.println("You entered:", line)
-    // }
-
-
 }
