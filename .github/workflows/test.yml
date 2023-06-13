@@ -23,7 +23,7 @@ jobs:
       - name: Build Odin
         run: |
           cd Odin
-          ./build_odin.sh
+          ./build_odin.sh release
 
       - name: Test
         run: odin test ./2022/odin/days/01
