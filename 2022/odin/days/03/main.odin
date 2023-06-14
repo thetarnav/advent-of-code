@@ -17,7 +17,7 @@ to_priority :: proc(c: rune) -> int {
 }
 
 solve_part1 :: proc(input: string) -> (result: int) {
-    lines: for line in utils.lines(input) {
+    lines: for line in strings.split_lines(input) {
         length := len(line)
         left := line[:length / 2]
 
@@ -33,7 +33,7 @@ solve_part1 :: proc(input: string) -> (result: int) {
 }
 
 solve_part2 :: proc(input: string) -> (result: int) {
-    lines := utils.lines(input)
+    lines := strings.split_lines(input)
 
     groups: for i := 0; i < len(lines); i += 3 {
         for char in lines[i] {

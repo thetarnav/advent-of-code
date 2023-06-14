@@ -10,7 +10,7 @@ get_battle_points :: proc(foe: int, me: int) -> int {
 }
 
 solve_part1 :: proc(input: string) -> (points: int) {
-    for line in utils.lines(input) {
+    for line in strings.split_lines(input) {
         foe := int(line[0] - 'A')
         me := int(line[2] - 'X')
         points += get_battle_points(foe, me)
@@ -19,7 +19,7 @@ solve_part1 :: proc(input: string) -> (points: int) {
 }
 
 solve_part2 :: proc(input: string) -> (points: int) {
-    for line in utils.lines(input) {
+    for line in strings.split_lines(input) {
         foe := int(line[0] - 'A')
         res := int(line[2] - 'X')
         me := (foe + (res - 1)) %% 3
