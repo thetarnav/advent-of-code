@@ -45,3 +45,5 @@ The total score is still calculated in the same way, but now you need to figure 
 Now that you're correctly decrypting the ultra top secret strategy guide, you would get a total score of `_12_`.
 
 Following the Elf's instructions for the second column, _what would your total score be if everything goes exactly according to your strategy guide?_
+
+Your puzzle answer was `10560`.
