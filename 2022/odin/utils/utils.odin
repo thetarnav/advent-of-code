@@ -3,6 +3,7 @@ package utils
 import "core:os"
 import "core:fmt"
 import "core:strings"
+import "core:slice"
 import "core:path/filepath"
 
 // Alternative to `os.read_entire_file` I guess
@@ -37,7 +38,17 @@ get_input_path :: proc(day: int, file: string = "input") -> string {
 read_input_file :: proc(day: int, file: string = "input") -> string {
     path := get_input_path(day, file)
     defer delete(path)
-    return string(read_file_or_panic(path))
+    content := string(read_file_or_panic(path))
+    content = strings.trim_right(content, "\n")
+    return content
+}
+
+trim_whitespace :: proc(content: string) -> string {
+    return strings.trim(content, " \t\n")
+}
+
+lines :: proc(content: string) -> []string {
+    return slice.mapper(strings.split(content, "\n"), trim_whitespace)
 }
 
 sum_slice :: proc(numbers: []int) -> int {

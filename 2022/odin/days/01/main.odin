@@ -8,7 +8,7 @@ import "core:testing"
 import "../../utils"
 
 sum_group :: proc(group: string) -> int {
-    return utils.sum(slice.mapper(strings.split(group, "\n"), strconv.atoi))
+    return utils.sum(slice.mapper(utils.lines(group), strconv.atoi))
 }
 
 solve_part1 :: proc(input: string) -> int {
