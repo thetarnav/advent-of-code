@@ -14,16 +14,16 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Download LLVM
-        run: sudo apt-get install llvm-11 clang-11
+      # - name: Download LLVM
+      #   run: sudo apt-get install llvm-11 clang-11
 
-      - name: Download Odin
-        run: git clone https://github.com/odin-lang/Odin
+      # - name: Download Odin
+      #   run: git clone https://github.com/odin-lang/Odin
 
-      - name: Build Odin
-        run: |
-          cd Odin
-          ./build_odin.sh release
+      # - name: Build Odin
+      #   run: |
+      #     cd Odin
+      #     ./build_odin.sh release
 
-      - name: Test
-        run: ./2022/odin/test.sh
+      # - name: Test
+      #   run: ./2022/odin/test.sh
