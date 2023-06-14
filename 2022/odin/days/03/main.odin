@@ -22,7 +22,7 @@ solve_part1 :: proc(input: string) -> (result: int) {
         left := line[:length / 2]
 
         for n in line[length / 2:] {
-            if (strings.contains_rune(left, n)) {
+            if strings.contains_rune(left, n) {
                 result += to_priority(n)
                 continue lines
             }
@@ -31,8 +31,6 @@ solve_part1 :: proc(input: string) -> (result: int) {
     }
     return
 }
-
-Char_Set :: bit_set['A' ..= 'z']
 
 solve_part2 :: proc(input: string) -> (result: int) {
     lines := utils.lines(input)
