@@ -9,24 +9,19 @@ get_battle_points :: proc(foe: int, me: int) -> int {
     return me + 1 + (me - foe + 1) %% 3 * 3
 }
 
-solve_part1 :: proc(input: string) -> int {
-    points := 0
-
+solve_part1 :: proc(input: string) -> (points: int) {
     for line in strings.split(input, "\n") {
         if len(line) == 3 {
             foe := int(line[0] - 'A')
             me := int(line[2] - 'X')
             points += get_battle_points(foe, me)
         }
-
     }
 
-    return points
+    return
 }
 
-solve_part2 :: proc(input: string) -> int {
-    points := 0
-
+solve_part2 :: proc(input: string) -> (points: int) {
     for line in strings.split(input, "\n") {
         if len(line) == 3 {
             foe := int(line[0] - 'A')
@@ -34,10 +29,9 @@ solve_part2 :: proc(input: string) -> int {
             me := (foe + (res - 1)) %% 3
             points += get_battle_points(foe, me)
         }
-
     }
 
-    return points
+    return
 }
 
 DAY :: 2
