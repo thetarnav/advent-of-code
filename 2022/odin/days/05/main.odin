@@ -26,44 +26,61 @@ move_line_values :: proc(line: string) -> (from, to, amount: int) {
     return vals[2] - 1, vals[3] - 1, vals[1]
 }
 
-solve_part1 :: proc(input: string, n_cols: int) -> (result: string) {
-    state: [9][dynamic]rune
-    moves_start: int
-    lines := strings.split_lines(input)
+parse_initial_state :: proc(
+    lines: []string,
+    n_cols: int,
+) -> (
+    state: [][dynamic]rune,
+    moves: []string,
+) {
+    state = make([][dynamic]rune, n_cols)
 
     for line, line_i in lines {
         if (line[1] == '1') {
-            moves_start = line_i + 2
+            moves = lines[line_i + 2:]
             break
         }
 
         for i in 0 ..< (len(line) + 1) / 4 {
             char := rune(line[i * 4 + 1])
-            if (char > 'A') do append_elem(&state[i], char)
+            if (char > 'A') do append(&state[i], char)
         }
     }
 
     for col, i in state do reverse(col)
 
-    for move in lines[moves_start:] {
-        from, to, amount := move_line_values(move)
+    return
+}
 
-        for _ in 0 ..< amount {
-            append_elem(&state[to], pop(&state[from]))
-        }
+
+solve_part1 :: proc(input: string, n_cols: int) -> (result: string) {
+    lines := strings.split_lines(input)
+    state, moves := parse_initial_state(lines, n_cols)
+
+    for move in moves {
+        from, to, amount := move_line_values(move)
+        for _ in 0 ..< amount do append(&state[to], pop(&state[from]))
     }
 
     result_builder := strings.builder_make()
-    for col in state {
-        if len(col) == 0 do continue
-        strings.write_rune(&result_builder, last(col))
-    }
-
+    for col in state do strings.write_rune(&result_builder, last(col))
     return strings.to_string(result_builder)
 }
 
-solve_part2 :: proc(input: string) -> (result: int) {
-    return
+solve_part2 :: proc(input: string, n_cols: int) -> (result: string) {
+    lines := strings.split_lines(input)
+    state, moves := parse_initial_state(lines, n_cols)
+
+    for move in moves {
+        from, to, amount := move_line_values(move)
+        end := len(state[from]) - amount
+        append(&state[to], ..state[from][end:])
+        resize(&state[from], end)
+    }
+
+    result_builder := strings.builder_make()
+    for col in state do strings.write_rune(&result_builder, last(col))
+    return strings.to_string(result_builder)
 }
 
 DAY :: 5
@@ -74,7 +91,8 @@ main :: proc() {
     input := utils.read_input_file(DAY)
     result1 := solve_part1(input, INPUT_COLS)
     fmt.println("part 1:", result1) // VQZNJMWTR
-    fmt.println("part 2:", solve_part2(input)) //
+    result2 := solve_part2(input, INPUT_COLS)
+    fmt.println("part 2:", result2) // NLCDCLVMQ
 }
 
 @(test)
@@ -87,5 +105,6 @@ test_part1 :: proc(t: ^testing.T) {
 @(test)
 test_part2 :: proc(t: ^testing.T) {
     input := utils.read_input_file(DAY, "example")
-    testing.expect_value(t, solve_part2(input), 0)
+    result := solve_part2(input, EXAMPLE_COLS)
+    testing.expect_value(t, result, "MCD")
 }
