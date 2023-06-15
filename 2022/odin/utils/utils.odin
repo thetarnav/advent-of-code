@@ -47,18 +47,6 @@ trim_whitespace :: proc(content: string) -> string {
     return strings.trim(content, " \t\n")
 }
 
-// split_on_either :: proc(content: string, runes: []u8) -> []string {
-//     arr: [dynamic]int
-//     for i in 0 ..< len(content) {
-//         for r in runes {
-//             if content[i] == r {
-//                 append_elem(arr, i)
-//             }
-//         }
-//     }
-//     return strings.split_at_indices(content, arr)
-// }
-
 sum_slice :: proc(numbers: []int) -> int {
     result := 0
     for number in numbers {

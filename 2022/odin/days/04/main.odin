@@ -1,45 +1,23 @@
 package main
 
 import "core:fmt"
+import "core:slice"
 import "core:strings"
 import "core:strconv"
 import "core:testing"
 import "../../utils"
 
 solve_part1 :: proc(input: string) -> (result: int) {
-    for line in strings.split_lines(input) {
-        ranges: [4]int
-        start := 0
-        for i := 0; i < len(line); i += 1 {
-            if line[i] == '-' {
-                i += 1
-                ranges[0] = strconv.atoi(line[:i])
-                start = i
-                break
-            }
-        }
-        for i := start; i < len(line); i += 1 {
-            if line[i] == ',' {
-                i += 1
-                ranges[1] = strconv.atoi(line[start:i])
-                start = i
-                break
-            }
-        }
-        for i := start; i < len(line); i += 1 {
-            if line[i] == '-' {
-                i += 1
-                ranges[2] = strconv.atoi(line[start:i])
-                ranges[3] = strconv.atoi(line[i:])
-            }
-        }
+    splits := []string{"\n", "-", ","}
+    values := slice.mapper(strings.split_multi(input, splits), strconv.atoi)
+    defer delete(values)
 
-        if (ranges[0] <= ranges[2] && ranges[1] >= ranges[3]) ||
-           (ranges[0] >= ranges[2] && ranges[1] <= ranges[3]) {
+    for i := 0; i < len(values); i += 4 {
+        a, b, c, d := values[i], values[i + 1], values[i + 2], values[i + 3]
+        if a <= c && b >= d || a >= c && b <= d {
             result += 1
         }
     }
-
     return
 }
 
