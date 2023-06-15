@@ -43,22 +43,18 @@ DAY :: 1
 
 main :: proc() {
     input := utils.read_input_file(DAY)
-
     fmt.println("part 1:", solve_part1(input))
-
     fmt.println("part 2:", solve_part2(input))
 }
 
 @(test)
 test_part1 :: proc(t: ^testing.T) {
     input := utils.read_input_file(DAY, "example")
-
     testing.expect_value(t, solve_part1(input), 24000)
 }
 
 @(test)
 test_part2 :: proc(t: ^testing.T) {
     input := utils.read_input_file(DAY, "example")
-
     testing.expect_value(t, solve_part2(input), 45000)
 }
