@@ -7,18 +7,6 @@ import "core:slice"
 import "core:testing"
 import "../../utils"
 
-reverse :: proc(array: [dynamic]$E) {
-    if len(array) == 0 do return
-    for i := 0; i < len(array) / 2; i += 1 {
-        j := len(array) - 1 - i
-        array[i], array[j] = array[j], array[i]
-    }
-}
-
-last :: proc(array: [dynamic]$E) -> E {
-    return array[len(array) - 1]
-}
-
 move_splits :: []string{"move ", " from ", " to "}
 
 move_line_values :: proc(line: string) -> (from, to, amount: int) {
@@ -47,11 +35,10 @@ parse_initial_state :: proc(
         }
     }
 
-    for col, i in state do reverse(col)
+    for col, i in state do utils.reverse(col)
 
     return
 }
-
 
 solve_part1 :: proc(input: string, n_cols: int) -> (result: string) {
     lines := strings.split_lines(input)
@@ -63,7 +50,7 @@ solve_part1 :: proc(input: string, n_cols: int) -> (result: string) {
     }
 
     result_builder := strings.builder_make()
-    for col in state do strings.write_rune(&result_builder, last(col))
+    for col in state do strings.write_rune(&result_builder, utils.last(col))
     return strings.to_string(result_builder)
 }
 
@@ -79,7 +66,7 @@ solve_part2 :: proc(input: string, n_cols: int) -> (result: string) {
     }
 
     result_builder := strings.builder_make()
-    for col in state do strings.write_rune(&result_builder, last(col))
+    for col in state do strings.write_rune(&result_builder, utils.last(col))
     return strings.to_string(result_builder)
 }
 

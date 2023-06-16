@@ -63,3 +63,25 @@ sum :: proc {
     sum_int,
     sum_slice,
 }
+
+reverse :: proc(array: [dynamic]$E) {
+    if len(array) == 0 do return
+    for i := 0; i < len(array) / 2; i += 1 {
+        j := len(array) - 1 - i
+        array[i], array[j] = array[j], array[i]
+    }
+}
+
+last :: proc(array: [dynamic]$E) -> E {
+    return array[len(array) - 1]
+}
+
+is_slice_unique :: proc(list: []u8) -> bool {
+    if len(list) < 2 do return true
+
+    for i in 1 ..< len(list) {
+        if (list[0] == list[i]) do return false
+    }
+
+    return is_slice_unique(list[1:])
+}
