@@ -76,12 +76,21 @@ last :: proc(array: [dynamic]$E) -> E {
     return array[len(array) - 1]
 }
 
-is_slice_unique :: proc(list: []u8) -> bool {
+is_unique_slice :: proc(list: []u8) -> bool {
     if len(list) < 2 do return true
 
     for i in 1 ..< len(list) {
         if (list[0] == list[i]) do return false
     }
 
-    return is_slice_unique(list[1:])
+    return is_unique_slice(list[1:])
+}
+
+is_unique_string :: proc(str: string) -> bool {
+    return is_unique_slice(transmute([]u8)str)
+}
+
+is_unique :: proc {
+    is_unique_slice,
+    is_unique_string,
 }

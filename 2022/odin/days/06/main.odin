@@ -7,44 +7,34 @@ import "core:strconv"
 import "core:testing"
 import "../../utils"
 
-solve_part1 :: proc(input: string) -> (result: int) {
-    a := input[0]
-    b := input[1]
-    c := input[2]
-    d := input[3]
+solve :: proc(input: string, marker_size: int) -> (result: int) {
+    seen := input[:marker_size]
 
-    for i in 4 ..< len(input) {
-        if utils.is_slice_unique({a, b, c, d}) do return i
-        a, b, c, d = b, c, d, input[i]
+    for i in marker_size ..< len(input) {
+        if utils.is_unique(seen) do return i - 1
+        seen = input[i - marker_size:i]
     }
 
-    return
-}
-
-solve_part2 :: proc(input: string) -> (result: int) {
-    return
+    fmt.panicf("no solution found")
 }
 
 DAY :: 6
+MARKER_SIZE_1 :: 4
+MARKER_SIZE_2 :: 14
 
 main :: proc() {
     input := utils.read_input_file(DAY)
-    fmt.println("part 1:", solve_part1(input)) // 1816
-    fmt.println("part 2:", solve_part2(input)) //
+    fmt.println("part 1:", solve(input, MARKER_SIZE_1)) // 1816
+    fmt.println("part 2:", solve(input, MARKER_SIZE_2)) // 2625
 }
 
 @(test)
-test_part1 :: proc(t: ^testing.T) {
+test :: proc(t: ^testing.T) {
     input := utils.read_input_file(DAY, "example")
 
     for line in strings.split_lines_iterator(&input) {
         pair := strings.split(line, " ")
-        testing.expect_value(t, solve_part1(pair[0]), strconv.atoi(pair[1]))
+        testing.expect_value(t, solve(pair[0], MARKER_SIZE_1), strconv.atoi(pair[1]))
+        testing.expect_value(t, solve(pair[0], MARKER_SIZE_2), strconv.atoi(pair[2]))
     }
-}
-
-@(test)
-test_part2 :: proc(t: ^testing.T) {
-    input := utils.read_input_file(DAY, "example")
-    testing.expect_value(t, solve_part2(input), 0)
 }
