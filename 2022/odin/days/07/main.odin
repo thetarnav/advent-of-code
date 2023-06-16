@@ -10,7 +10,7 @@ import "../../utils"
 Directory :: struct {
     parent:   ^Directory,
     size:     int, // own
-    children: [dynamic]Directory,
+    children: [dynamic]^Directory,
 }
 
 parse_input :: proc(input: ^string) -> (root: Directory) {
@@ -24,11 +24,10 @@ parse_input :: proc(input: ^string) -> (root: Directory) {
             continue
         }
         if line[:4] == "$ cd" {
-            child := Directory {
-                parent = dir,
-            }
+            child := new(Directory)
+            child.parent = dir
             append(&dir.children, child)
-            dir = &child
+            dir = child
             continue
         }
         pair := strings.split(line, " ")
@@ -38,10 +37,30 @@ parse_input :: proc(input: ^string) -> (root: Directory) {
     return
 }
 
+print_dir :: proc(dir: Directory, indent: int = 0) {
+    fmt.println(strings.repeat(" |", indent), dir.size)
+    for child in dir.children do print_dir(child^, indent + 1)
+}
+
+
 solve_part1 :: proc(input: ^string) -> (result: int) {
     dir := parse_input(input)
+    print_dir(dir)
 
-    fmt.println("dir:", dir, dir.size)
+    traverse_dir :: proc(dir: ^Directory) -> (size: int, matched_size: int) {
+        size += dir.size
+        for child in dir.children {
+            child_size, child_matched_size := traverse_dir(child)
+            size += child_size
+            matched_size += child_matched_size
+        }
+        if (size <= 100000) {
+            matched_size += size
+        }
+        return
+    }
+
+    _, result = traverse_dir(&dir)
 
     return
 }
@@ -54,7 +73,7 @@ DAY :: 7
 
 main :: proc() {
     input := utils.read_input_file(DAY)
-    fmt.println("part 1:", solve_part1(&input)) //
+    fmt.println("part 1:", solve_part1(&input)) // 1348005
     fmt.println("part 2:", solve_part2(input)) //
 }
 
@@ -67,5 +86,5 @@ test_part1 :: proc(t: ^testing.T) {
 @(test)
 test_part2 :: proc(t: ^testing.T) {
     input := utils.read_input_file(DAY, "example")
-    testing.expect_value(t, solve_part2(input), 0)
+    testing.expect_value(t, solve_part2(input), 24933642)
 }
