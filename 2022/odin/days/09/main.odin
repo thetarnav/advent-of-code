@@ -24,15 +24,20 @@ solve :: proc(input: string, rope_size: int) -> (result: int) {
 
     for line in strings.split_lines(input) {
         values := strings.split(line, " ")
-        rope[0] += direction_to_vector_map[values[0]] * strconv.atoi(values[1])
+        times := strconv.atoi(values[1])
+        h_delta := direction_to_vector_map[values[0]]
 
-        for i in 1 ..< rope_size {
-            for {
+        for _ in 0 ..< times {
+            rope[0] += h_delta
+            for i in 1 ..< rope_size {
                 dx, dy := rope[i - 1].x - rope[i].x, rope[i - 1].y - rope[i].y
                 adx, ady := abs(dx), abs(dy)
-                if adx <= 1 && ady <= 1 do break
+                prev_t_pos := rope[i]
+
+                if adx <= 1 && ady <= 1 do continue
                 if adx != 0 do rope[i].x += dx / adx
                 if ady != 0 do rope[i].y += dy / ady
+
                 if i == rope_size - 1 && !slice.contains(tail_positions[:], rope[i]) {
                     append(&tail_positions, rope[i])
                 }
@@ -50,7 +55,7 @@ PART2_ROPE_SIZE :: 10
 main :: proc() {
     input := utils.read_input_file(DAY)
     fmt.println("part 1:", solve(input, PART1_ROPE_SIZE)) // 6563
-    fmt.println("part 2:", solve(input, PART2_ROPE_SIZE)) // 2656
+    fmt.println("part 2:", solve(input, PART2_ROPE_SIZE)) // 2653
 }
 
 @(test)
