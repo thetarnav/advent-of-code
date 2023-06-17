@@ -84,7 +84,7 @@ iterate_matrix_shrink :: proc(size: int, idx: ^int) -> (x, y: int, cond: bool) {
     return
 }
 
-is_unique_slice :: proc(list: []u8) -> bool {
+is_unique_slice :: proc(list: []$E) -> bool {
     if len(list) < 2 do return true
 
     for i in 1 ..< len(list) {
@@ -101,4 +101,17 @@ is_unique_string :: proc(str: string) -> bool {
 is_unique :: proc {
     is_unique_slice,
     is_unique_string,
+}
+
+dedupe :: proc(list: []$E) -> []E {
+    if len(list) < 2 do return list
+
+    deduped: [dynamic]E
+    append(&deduped, list[0])
+
+    for i in 1 ..< len(list) {
+        if !slice.contains(deduped[:], list[i]) do append(&deduped, list[i])
+    }
+
+    return deduped[:]
 }
