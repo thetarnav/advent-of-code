@@ -7,28 +7,21 @@ import "core:strconv"
 import "core:testing"
 import "../../utils"
 
-Matrix :: [][]int
-
-delete_matrix :: proc(m: Matrix) {
-    for row in m do delete(row)
-    delete(m)
-}
-
-parse_input :: proc(input: string) -> (m: Matrix, size: int) {
+parse_input :: proc(input: string) -> (buffer: []int, m: [][]int, size: int) {
     lines := strings.split_lines(input)
     size = len(lines)
+    buffer = make([]int, size * size)
     m = make([][]int, size)
     for line, y in lines {
-        m[y] = make([]int, size)
+        m[y] = buffer[y * size:(y + 1) * size]
         for c, x in line do m[y][x] = utils.rune_to_int(c)
     }
-
     return
 }
 
 solve_part1 :: proc(input: string) -> (result: int) {
-    m, size := parse_input(input)
-    defer delete_matrix(m)
+    buf, m, size := parse_input(input)
+    defer delete(buf)
 
     it_i := 0
     for x, y in utils.iterate_matrix(size, &it_i) {
@@ -59,6 +52,33 @@ solve_part1 :: proc(input: string) -> (result: int) {
 }
 
 solve_part2 :: proc(input: string) -> (result: int) {
+    buf, m, size := parse_input(input)
+    defer delete(buf)
+
+    it_i := 0
+    for x, y in utils.iterate_matrix(size, &it_i) {
+        if x == 0 || y == 0 || x == size - 1 || y == size - 1 do continue
+        h := m[y][x]
+        r, l, d, u := 0, 0, 0, 0
+        for x2 in x + 1 ..< size {
+            r += 1
+            if m[y][x2] >= h do break
+        }
+        for x2 in 0 ..< x {
+            l += 1
+            if m[y][x - x2 - 1] >= h do break
+        }
+        for y2 in 0 ..< y {
+            u += 1
+            if m[y - y2 - 1][x] >= h do break
+        }
+        for y2 in y + 1 ..< size {
+            d += 1
+            if m[y2][x] >= h do break
+        }
+        result = max(result, r * l * d * u)
+    }
+
     return
 }
 
@@ -67,7 +87,7 @@ DAY :: 8
 main :: proc() {
     input := utils.read_input_file(DAY)
     fmt.println("part 1:", solve_part1(input)) // 1820
-    fmt.println("part 2:", solve_part2(input)) //
+    fmt.println("part 2:", solve_part2(input)) // 385112
 }
 
 @(test)
@@ -79,5 +99,5 @@ test_part1 :: proc(t: ^testing.T) {
 @(test)
 test_part2 :: proc(t: ^testing.T) {
     input := utils.read_input_file(DAY, "example")
-    testing.expect_value(t, solve_part2(input), 0)
+    testing.expect_value(t, solve_part2(input), 8)
 }
