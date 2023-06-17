@@ -32,9 +32,8 @@ solve :: proc(input: string, rope_size: int) -> (result: int) {
             for i in 1 ..< rope_size {
                 dx, dy := rope[i - 1].x - rope[i].x, rope[i - 1].y - rope[i].y
                 adx, ady := abs(dx), abs(dy)
-                prev_t_pos := rope[i]
 
-                if adx <= 1 && ady <= 1 do continue
+                if adx <= 1 && ady <= 1 do break
                 if adx != 0 do rope[i].x += dx / adx
                 if ady != 0 do rope[i].y += dy / ady
 
