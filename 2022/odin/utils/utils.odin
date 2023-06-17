@@ -6,22 +6,6 @@ import "core:strings"
 import "core:slice"
 import "core:path/filepath"
 
-// Alternative to `os.read_entire_file` I guess
-read_file_or_panic :: proc(path: string) -> []byte {
-    handle, open_err := os.open(path)
-    if open_err > 0 {fmt.panicf("Open Error: %#v", open_err)}
-    defer os.close(handle)
-
-    length, size_err := os.file_size(handle)
-    if size_err > 0 {fmt.panicf("File Size Error: %#v", open_err)}
-
-    buf := make_slice([]byte, length) // make sure the slice is allocated on the heap
-    _, read_err := os.read(handle, buf)
-    if read_err > 0 {fmt.panicf("Read Error: %#v", open_err)}
-
-    return buf
-}
-
 get_input_path :: proc(day: int, file: string = "input") -> string {
     builder := strings.builder_from_bytes([]byte{0, 0})
 
@@ -38,9 +22,9 @@ get_input_path :: proc(day: int, file: string = "input") -> string {
 read_input_file :: proc(day: int, file: string = "input") -> string {
     path := get_input_path(day, file)
     defer delete(path)
-    content := string(read_file_or_panic(path))
-    content = strings.trim_right(content, "\n")
-    return content
+    data, ok := os.read_entire_file(path)
+    if !ok do fmt.panicf("Failed to read file: %s", path)
+    return strings.trim_right(string(data), "\n")
 }
 
 trim_whitespace :: proc(content: string) -> string {
