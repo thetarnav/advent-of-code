@@ -7,17 +7,28 @@ import "core:strconv"
 import "core:testing"
 import "../../utils"
 
+Matrix :: [][]int
 
-solve_part1 :: proc(input: string) -> (result: int) {
+delete_matrix :: proc(m: Matrix) {
+    for row in m do delete(row)
+    delete(m)
+}
+
+parse_input :: proc(input: string) -> (m: Matrix, size: int) {
     lines := strings.split_lines(input)
-    size := len(lines)
-
-    m := make([][]int, size)
+    size = len(lines)
+    m = make([][]int, size)
     for line, y in lines {
         m[y] = make([]int, size)
         for c, x in line do m[y][x] = utils.rune_to_int(c)
     }
 
+    return
+}
+
+solve_part1 :: proc(input: string) -> (result: int) {
+    m, size := parse_input(input)
+    defer delete_matrix(m)
 
     it_i := 0
     for x, y in utils.iterate_matrix(size, &it_i) {
