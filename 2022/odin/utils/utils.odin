@@ -48,6 +48,10 @@ sum :: proc {
     sum_slice,
 }
 
+rune_to_int :: proc(c: rune) -> (result: int) {
+    return int(c - '0')
+}
+
 reverse :: proc(array: [dynamic]$E) {
     if len(array) == 0 do return
     for i := 0; i < len(array) / 2; i += 1 {
@@ -58,6 +62,26 @@ reverse :: proc(array: [dynamic]$E) {
 
 last :: proc(array: [dynamic]$E) -> E {
     return array[len(array) - 1]
+}
+
+iterate_matrix :: proc(size: int, idx: ^int) -> (x, y: int, cond: bool) {
+    i := idx^
+    if i < size * size {
+        x = i % size
+        y = i / size
+        cond = true
+        idx^ += 1
+    }
+    return
+}
+
+iterate_matrix_shrink :: proc(size: int, idx: ^int) -> (x, y: int, cond: bool) {
+    x, y, cond = iterate_matrix(size, idx)
+    if cond {
+        y = y % 2 == 0 ? y / 2 : size - y / 2 - 1
+        x = x % 2 == 0 ? x / 2 : size - x / 2 - 1
+    }
+    return
 }
 
 is_unique_slice :: proc(list: []u8) -> bool {
