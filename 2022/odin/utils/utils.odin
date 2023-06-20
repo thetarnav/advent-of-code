@@ -97,7 +97,7 @@ dedupe :: proc(list: []$E) -> []E {
 
 
 top_n :: proc(slice: []$E, n: int) -> []E {
-    max := make([]int, n)
+    max := make([]E, n)
 
     for a in slice {
         for i in 0 ..< n {
