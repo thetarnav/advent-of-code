@@ -6,27 +6,6 @@ import "core:strings"
 import "core:slice"
 import "core:path/filepath"
 
-get_input_path :: proc(day: int, file: string = "input") -> string {
-    builder := strings.builder_from_bytes([]byte{0, 0})
-
-    if day < 10 {strings.write_int(&builder, 0)}
-    strings.write_int(&builder, day)
-
-    cwd := filepath.dir(#file)
-    defer delete(cwd)
-    day_string := strings.to_string(builder)
-    filename := strings.concatenate([]string{file, ".txt"})
-    return filepath.join([]string{cwd, "..", "..", "data", day_string, filename})
-}
-
-read_input_file :: proc(day: int, file: string = "input") -> string {
-    path := get_input_path(day, file)
-    defer delete(path)
-    data, ok := os.read_entire_file(path)
-    if !ok do fmt.panicf("Failed to read file: %s", path)
-    return strings.trim_right(string(data), "\n")
-}
-
 trim_whitespace :: proc(content: string) -> string {
     return strings.trim(content, " \t\n")
 }
