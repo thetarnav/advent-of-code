@@ -69,6 +69,13 @@ d11: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, p
                 monkey.interactions += len(monkey.items)
                 for _item in monkey.items {
                     item := monkey.operation_proc(_item, monkey.operation_payload)
+                    /*
+                        any number divisible by all tests is divisible by the product of all tests
+                        33 % 2 == 1, 33 % 3 == 0, 33 % 5 == 3
+                        2 * 3 * 5 == 30
+                        33 % 30 == 3
+                        3  % 2 == 1, 3  % 3 == 0 ,3  % 5 == 3
+                    */
                     item %= mod
                     item /= divide_by
                     target_i := item % monkey.test == 0 ? monkey.if_true : monkey.if_false
