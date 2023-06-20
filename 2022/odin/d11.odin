@@ -33,7 +33,7 @@ d11: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, p
     STARTING_ITEMS_PREFIX :: "  Starting items: "
     TEST_PREFIX :: "  Test: divisible by "
 
-    solve :: proc(input: string, rounds: int, does_divide: bool) -> (result: int) {
+    solve :: proc(input: string, rounds: int, divide_by: u64) -> (result: int) {
         monkeys: [dynamic]^Monkey
         mod: u64 = 1
 
@@ -69,8 +69,8 @@ d11: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, p
                 monkey.interactions += len(monkey.items)
                 for _item in monkey.items {
                     item := monkey.operation_proc(_item, monkey.operation_payload)
-                    if does_divide do item /= 3
-                    else do item %= mod
+                    item %= mod
+                    item /= divide_by
                     target_i := item % monkey.test == 0 ? monkey.if_true : monkey.if_false
                     append(&monkeys[target_i].items, item)
                 }
@@ -88,5 +88,5 @@ d11: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, p
     }
 
 
-    return solve(input, 20, true), solve(input, 10000, false)
+    return solve(input, 20, 3), solve(input, 10000, 1)
 }
