@@ -94,3 +94,24 @@ dedupe :: proc(list: []$E) -> []E {
 
     return deduped[:]
 }
+
+
+top_n :: proc(slice: []$E, n: int) -> []E {
+    max := make([]int, n)
+
+    for a in slice {
+        for i in 0 ..< n {
+            if a > max[i] {
+                // shift the rest of the array down to preserve order
+                for j := n - 1; j > i; j -= 1 {
+                    max[j] = max[j - 1]
+                }
+                // max is always on the left
+                max[i] = a
+                break
+            }
+        }
+    }
+
+    return max
+}

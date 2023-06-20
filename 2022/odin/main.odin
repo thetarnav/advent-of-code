@@ -109,6 +109,7 @@ days := map[string]Day_Proc {
     "08" = d08,
     "09" = d09,
     "10" = d10,
+    "11" = d11,
 }
 
 get_arg_days :: proc() -> []string {

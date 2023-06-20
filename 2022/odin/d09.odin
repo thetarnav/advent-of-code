@@ -15,7 +15,7 @@ direction_to_vector_map := map[string]Vector {
     "D" = Vector{0, -1},
 }
 
-d09: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
+d09: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
     solve :: proc(input: string, rope_size: int) -> (result: int) {
         rope := make([]Vector, rope_size)
         defer delete(rope)

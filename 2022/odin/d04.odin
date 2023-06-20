@@ -5,7 +5,7 @@ import "core:strings"
 import "core:strconv"
 import "./utils"
 
-d04: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
+d04: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
     splits :: []string{"\n", "-", ","}
 
     solve_part1 :: proc(input: string) -> (result: int) {

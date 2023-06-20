@@ -6,7 +6,7 @@ import "core:strings"
 import "core:strconv"
 import "./utils"
 
-d03: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
+d03: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
     to_priority :: proc(c: rune) -> int {
         switch c {
         case 'a' ..= 'z':

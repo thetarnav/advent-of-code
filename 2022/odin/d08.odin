@@ -6,7 +6,7 @@ import "core:strings"
 import "core:strconv"
 import "./utils"
 
-d08: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
+d08: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
     parse_input :: proc(input: string) -> (buffer: []int, m: [][]int, size: int) {
         lines := strings.split_lines(input)
         size = len(lines)

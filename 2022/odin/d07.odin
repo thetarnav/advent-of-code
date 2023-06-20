@@ -6,7 +6,7 @@ import "core:strings"
 import "core:strconv"
 import "./utils"
 
-d07: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
+d07: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
     Directory :: struct {
         parent:   ^Directory,
         size:     int, // own
@@ -18,14 +18,14 @@ d07: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, p
         append(&dirs, root)
         dir := root
         for line in strings.split_lines(input) {
-            if line[:4] == "$ ls" do continue
-            if line[:3] == "dir" do continue
-            if len(line) >= 6 && line[:6] == "$ cd /" do continue
-            if len(line) >= 7 && line[:7] == "$ cd .." {
+            if strings.has_prefix(line, "$ ls") do continue
+            if strings.has_prefix(line, "dir") do continue
+            if strings.has_prefix(line, "$ cd /") do continue
+            if strings.has_prefix(line, "$ cd ..") {
                 dir = dir.parent
                 continue
             }
-            if line[:4] == "$ cd" {
+            if strings.has_prefix(line, "$ cd") {
                 child := new(Directory)
                 child.parent = dir
                 append(&dir.children, child)

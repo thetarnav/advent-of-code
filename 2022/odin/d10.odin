@@ -6,7 +6,7 @@ import "core:strings"
 import "core:strconv"
 import "./utils"
 
-d10: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
+d10: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
     solve_part1 :: proc(input: string) -> (result: int) {
         lines := strings.split_lines(input)
         value := 1

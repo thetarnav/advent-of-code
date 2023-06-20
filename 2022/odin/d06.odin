@@ -6,7 +6,7 @@ import "core:strings"
 import "core:strconv"
 import "./utils"
 
-d06: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
+d06: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
     solve :: proc(input: string, marker_size: int) -> (result: int) {
         seen := input[:marker_size]
 

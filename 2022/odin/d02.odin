@@ -5,7 +5,7 @@ import "core:strings"
 import "core:strconv"
 import "./utils"
 
-d02: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
+d02: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
     get_battle_points :: proc(foe: int, me: int) -> int {
         return me + 1 + (me - foe + 1) %% 3 * 3
     }

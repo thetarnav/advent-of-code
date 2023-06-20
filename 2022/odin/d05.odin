@@ -5,7 +5,7 @@ import "core:strings"
 import "core:strconv"
 import "./utils"
 
-d05: Day_Proc = proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
+d05: Day_Proc : proc(input: string, input_type: Input_Type) -> (part1: Result, part2: Result) {
     move_splits :: []string{"move ", " from ", " to "}
 
     move_line_values :: proc(line: string) -> (from, to, amount: int) {
