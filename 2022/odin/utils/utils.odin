@@ -5,6 +5,7 @@ import "core:fmt"
 import "core:strings"
 import "core:slice"
 import "core:path/filepath"
+import "core:builtin"
 
 trim_whitespace :: proc(content: string) -> string {
     return strings.trim(content, " \t\n")
@@ -25,6 +26,14 @@ sum_int :: proc(a: int, b: int) -> int {
 sum :: proc {
     sum_int,
     sum_slice,
+}
+
+abs :: proc(a: int) -> int {
+    return builtin.abs(a)
+}
+
+sign :: proc(a: int) -> int {
+    return a == 0 ? 0 : a / abs(a)
 }
 
 rune_to_int :: proc(c: rune) -> (result: int) {
