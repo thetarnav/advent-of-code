@@ -13,7 +13,6 @@ import "core:testing"
 
 Result :: union {
     int,
-    u64,
     string,
 }
 
@@ -37,11 +36,11 @@ read_input_file :: proc(day: string, file: string) -> string {
 }
 
 print_result :: proc(result: Result) {
-    #partial switch in result {
+    #partial switch v in result {
     case string:
         padding := 0
-        it := result
-        for line in strings.split_lines_iterator(&it.(string)) {
+        it := v
+        for line in strings.split_lines_iterator(&it) {
             for i in 0 ..< padding do fmt.printf(" ")
             fmt.println(line)
             padding = 11
@@ -52,10 +51,10 @@ print_result :: proc(result: Result) {
 }
 
 copy_result :: proc(result: Result, allocator: runtime.Allocator) -> Result {
-    #partial switch in result {
+    #partial switch v in result {
     case string:
-        copy_result := make([]u8, len(result.(string)), allocator)
-        copy(copy_result, result.(string))
+        copy_result := make([]u8, len(v), allocator)
+        copy(copy_result, v)
         return string(copy_result)
     case:
         return result
@@ -147,13 +146,15 @@ main :: proc() {
 }
 
 result_to_string :: proc(result: Result) -> string {
-    #partial switch in result {
+    switch v in result {
     case string:
-        return result.(string)
-    case:
+        return v
+    case int:
         sb := strings.builder_make()
-        strings.write_int(&sb, result.(int))
+        strings.write_int(&sb, v)
         return strings.to_string(sb)
+    case:
+        fmt.panicf("Invalid result type: %v", result)
     }
 }
 
